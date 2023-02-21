@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Labrada&display=swap');
+
+*{
+    padding: 0;
+    margin: 0;
+}
+
+.bg{
+    background: url("./Images/bg.jpg");
+    background-size: 100vw 100vh;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#scorebox{
+    position: absolute;
+    font-size: 39px;
+    font-weight: bold;
+    top: -2vh;
+    right: 400px;
+    font-family: 'Labrada', serif;
+}
+
+#highscorebox{
+    position: absolute;
+    font-size: 39px;
+    font-weight: bold;
+    top: -2vh;
+    right: 100px;
+    font-family: 'Labrada', serif;
+}
+
+#board{
+    background: linear-gradient(rgb(170, 236, 170), rgb(236,236,167));
+    width: 84vmin;
+    height: 92vmin;
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: repeat(18,1fr);
+    grid-template-rows: repeat(18,1fr);
+}
+
+.head{
+    background: linear-gradient(red, yellow );
+    border: 2px solid purple;
+    transform: scale(1.02);
+    border-radius: 9px;
+    
+}
+
+.snake{
+    background-color: purple;
+    border: .25vmin solid white;
+    border-radius: 12px;
+  
+}
+.food{
+    background: linear-gradient(rgb(199, 102, 102), purple);
+    border: .25vmin solid black;
+    border-radius: 8px;
+}
