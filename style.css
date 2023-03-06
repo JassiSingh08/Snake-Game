@@ -3,6 +3,7 @@
 *{
     padding: 0;
     margin: 0;
+    font-family: 'Labrada', serif;
 }
 
 .bg{
@@ -16,20 +17,18 @@
 
 #scorebox{
     position: absolute;
-    font-size: 39px;
+    font-size: 26px;
     font-weight: bold;
-    top: -2vh;
-    right: 400px;
-    font-family: 'Labrada', serif;
+    top: 2vmin;
+    left: 30px;
 }
 
 #highscorebox{
     position: absolute;
-    font-size: 39px;
+    font-size: 26px;
     font-weight: bold;
-    top: -2vh;
-    right: 100px;
-    font-family: 'Labrada', serif;
+    top: 2vmin;
+    right: 30px;
 }
 
 #board{
@@ -60,4 +59,90 @@
     background: linear-gradient(rgb(199, 102, 102), purple);
     border: .25vmin solid black;
     border-radius: 8px;
+}
+
+
+.speedbtns{
+    position: absolute;
+    top: 6vmax;
+    left: 5vmax;
+    gap: 15px;
+}
+
+.speedbtns p{
+    margin: 15px 0;
+    font-size: 26px ;
+    font-weight: bold;
+    font-family: 'Labrada', serif;
+}
+
+#uparrow{
+    width: 50px;
+    padding: 0 10px 5px;
+    border-radius: 10px;
+    border: 0;
+}
+#Dnarrow{
+    width: 50px;
+    padding: 0 10px 5px;
+    border-radius: 10px;
+    border: 0;
+}
+
+#uparrow span{
+    font-size: 23px;
+    font-weight: bolder;
+}
+
+#Dnarrow span{
+    font-size: 23px;
+    font-weight: bolder;
+}
+
+#OnScreenButtons button{
+    font-size: 20px;
+    font-weight: bolder;
+}
+
+#OnScreenButtons{
+display: none;
+}
+
+
+/* responsive  */
+
+@media screen and (max-width: 900px) {
+    #OnScreenButtons{
+        display: flex;
+        position: absolute;
+        bottom: 10vmin;
+    }
+    #b1 , #b2, #b3, #b4{
+        padding: 10px 15px;
+        text-transform: uppercase;
+        border-radius: 10px;
+        border: 0.5px solid;
+        margin: 0px 5px ;
+    }
+
+    .res4phn{
+        display: flex;
+        line-height: 1rem;
+    }
+    .res4phn p{
+        margin-right: 20px;
+    }
+    .res4phn button{
+        margin-bottom: 10px;
+        margin-left: 15px;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .speedbtns{
+        display: flex;
+        flex-direction: column;
+        line-height: 1rem;
+        justify-content: space-evenly;
+    }
 }
