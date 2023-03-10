@@ -127,7 +127,7 @@ function gameEngine(){
 // Difficulty/  let the user update it USING ONSCREEN BUTTONS
 
 upArr.addEventListener("click",()=>{
-    speed += 1;
+    speed += 5;
     dispspeed.innerHTML = "Speed : " +speed ;
     if(speed > 14)                                  // Added difficulty Indicator for the user 
     { 
@@ -143,10 +143,10 @@ upArr.addEventListener("click",()=>{
 })
 
 downArr.addEventListener("click",()=>{
-    speed -= 1;
-    if(speed<0){
+    speed -= 5;
+    if(speed<1){
         alert("Speed Can Not Be Negative!");
-        speed = 1 
+        speed = 5 
     }
     dispspeed.innerHTML = "Speed : " +speed ;
 
