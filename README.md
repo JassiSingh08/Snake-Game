@@ -2,7 +2,7 @@
 
 🔊 INTRODUCTION :
 
-Remember that when we used to play many games on our keypad phones back in the day. One of the games is Snake Game. I tried to make my version of that snak egame with that retro style theme. 
+Remember that when we used to play many games on our keypad phones back in the day. One of the games is Snake Game. I tried to make my version of that snake game with that retro style theme. 
 
 🖋 Customisations :
 
