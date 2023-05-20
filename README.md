@@ -4,6 +4,12 @@
 
 Remember when we used to play many games on our keypad phones back in the day? One of the games is Snake Game. I tried to make my version of that snake game with that retro-style theme. 
 
+<h2>🚀 Demo</h2>
+
+https://www.loom.com/share/1ef6f95976fb41f7a2709b2ecc383d50
+
+<hr>
+
 🖋 Customisations :
 
 1. Used HTMl, you open the project you will see a board seperated from the background, with score section tabs. 
