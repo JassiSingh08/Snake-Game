@@ -9,7 +9,11 @@ Remember when we used to play many games on our keypad phones back in the day? O
 https://www.loom.com/share/feb0e6c4e0544a82ab67961d39feefc3
 
 <hr>
+<h2>▶ Play the Game Here</h2>
 
+https://jassisingh08.github.io/Snake-Game/
+
+<hr>
 🖋 Customisations :
 
 1. Used HTMl, you open the project you will see a board seperated from the background, with score section tabs. 
