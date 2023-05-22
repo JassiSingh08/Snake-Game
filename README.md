@@ -58,5 +58,5 @@ If Any of the Above Conditions met, An alert will popup showing "the Game Over. 
 
 The game incorporated many logic buiding concepts that will help me in the future projects.
 
-Any Feedbacks and Suggestions are appreciated
+Any Feedbacks and Suggestions are appreciated.
 
