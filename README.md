@@ -4,7 +4,7 @@
 
 Remember when we used to play many games on our keypad phones back in the day? One of the games is Snake Game. I tried to make my version of that snake game with that retro-style theme. 
 
-<h2>🚀 Demo</h2>
+<h2>🚀 Demo </h2>
 
 https://www.loom.com/share/feb0e6c4e0544a82ab67961d39feefc3
 
