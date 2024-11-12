@@ -57,8 +57,8 @@ function gameEngine() {
     // updating the snake array & food 
 
     if (isCollide(snakeArr)) {
-        gameOverSound.play();
         musicSound.pause();
+        gameOverSound.play();
         inputDir = { x: 0, y: 0 };
         alert("Game Over. Your Score is " + score + ". Press any key to play again!");
         snakeArr = [{ x: 13, y: 15 }];
@@ -210,18 +210,21 @@ var Joy1 = new JoyStick("joyDiv", {}, function (stickData) {
     // Only handle primary directions, ignore diagonal ones
     switch (direction) {
         case "N":
+        case "NE":
             console.log("ArrowUp");
             inputDir.x = 0;
             inputDir.y = -1;
             break;
 
         case "S":
+        case "SW":
             console.log("ArrowDown");
             inputDir.x = 0;
             inputDir.y = 1;
             break;
 
         case "W":
+        case "NW":
             console.log("ArrowLeft");
             inputDir.x = -1;
             inputDir.y = 0;
@@ -229,14 +232,13 @@ var Joy1 = new JoyStick("joyDiv", {}, function (stickData) {
 
 
         case "E":
+        case "SE":
             console.log("ArrowRight");
             inputDir.x = 1;
             inputDir.y = 0;
             break;
 
         default:
-            console.log("Neutral");
-            // No direction, keep inputDir as (0,0)
             break;
     }
 });
