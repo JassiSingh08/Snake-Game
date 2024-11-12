@@ -1,148 +1,112 @@
-@import url('https://fonts.googleapis.com/css2?family=Labrada&display=swap');
-
-*{
-    padding: 0;
-    margin: 0;
-    font-family: 'Labrada', serif;
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Labrada", serif;
+  overflow: hidden;
 }
 
-.bg{
-    background: url("./Images/bg.jpg");
-    background-size: 100vw 100vh;
-    min-height: 100vh;
+.bg {
+  background: url("./Images/bg.jpg");
+  background-size: 100vw 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#score-container {
+  background: linear-gradient(rgb(170, 236, 170), rgb(236, 236, 167));
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+#scorebox,
+#highscorebox {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+#board {
+  background: linear-gradient(rgb(170, 236, 170), rgb(236, 236, 167));
+  margin-top: 10px;
+  width: 84vmin;
+  height: 92vmin;
+  border: 2px solid black;
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  grid-template-rows: repeat(18, 1fr);
+}
+
+.head {
+  background: linear-gradient(red, yellow);
+  border: 2px solid purple;
+  transform: scale(1.02);
+  border-radius: 9px;
+}
+
+.snake {
+  background-color: purple;
+  border: 0.25vmin solid white;
+  border-radius: 12px;
+}
+
+.food {
+  background: linear-gradient(rgb(199, 102, 102), purple);
+  border: 0.25vmin solid black;
+  border-radius: 8px;
+}
+
+.speedbtns {
+  display: none;
+  position: absolute;
+  left: 10%;
+  gap: 15px;
+}
+
+.speedbtns p {
+  margin: 15px 0;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+#uparrow,
+#Dnarrow {
+  width: 50px;
+  padding: 0 10px 5px;
+  border-radius: 10px;
+  border: 0;
+}
+
+#uparrow span,
+#Dnarrow span {
+  font-size: 23px;
+  font-weight: bolder;
+}
+
+#joyDiv {
+  display: none;
+}
+
+/* Responsive Styles */
+@media screen and (max-width: 900px) {
+  #joyDiv {
+    display: flex;
+  }
+
+  .res4phn {
     display: flex;
     justify-content: center;
-    align-items: center;
-}
+    line-height: 1rem;
+  }
 
-#scorebox{
-    position: absolute;
-    font-size: 26px;
-    font-weight: bold;
-    top: 2vmin;
-    left: 30px;
-}
+  .res4phn p {
+    margin-right: 20px;
+  }
 
-#highscorebox{
-    position: absolute;
-    font-size: 26px;
-    font-weight: bold;
-    top: 2vmin;
-    right: 30px;
-}
-
-#board{
-    background: linear-gradient(rgb(170, 236, 170), rgb(236,236,167));
-    width: 84vmin;
-    height: 92vmin;
-    border: 2px solid black;
-    display: grid;
-    grid-template-columns: repeat(18,1fr);
-    grid-template-rows: repeat(18,1fr);
-}
-
-.head{
-    background: linear-gradient(red, yellow );
-    border: 2px solid purple;
-    transform: scale(1.02);
-    border-radius: 9px;
-    
-}
-
-.snake{
-    background-color: purple;
-    border: .25vmin solid white;
-    border-radius: 12px;
-  
-}
-.food{
-    background: linear-gradient(rgb(199, 102, 102), purple);
-    border: .25vmin solid black;
-    border-radius: 8px;
-}
-
-
-.speedbtns{
-    position: absolute;
-    top: 6vmax;
-    left: 5vmax;
-    gap: 15px;
-}
-
-.speedbtns p{
-    margin: 15px 0;
-    font-size: 26px ;
-    font-weight: bold;
-    font-family: 'Labrada', serif;
-}
-
-#uparrow{
-    width: 50px;
-    padding: 0 10px 5px;
-    border-radius: 10px;
-    border: 0;
-}
-#Dnarrow{
-    width: 50px;
-    padding: 0 10px 5px;
-    border-radius: 10px;
-    border: 0;
-}
-
-#uparrow span{
-    font-size: 23px;
-    font-weight: bolder;
-}
-
-#Dnarrow span{
-    font-size: 23px;
-    font-weight: bolder;
-}
-
-#OnScreenButtons button{
-    font-size: 20px;
-    font-weight: bolder;
-}
-
-#OnScreenButtons{
-display: none;
-}
-
-
-/* responsive  */
-
-@media screen and (max-width: 900px) {
-    #OnScreenButtons{
-        display: flex;
-        position: absolute;
-        bottom: 10vmin;
-    }
-    #b1 , #b2, #b3, #b4{
-        padding: 10px 15px;
-        text-transform: uppercase;
-        border-radius: 10px;
-        border: 0.5px solid;
-        margin: 0px 5px ;
-    }
-
-    .res4phn{
-        display: flex;
-        line-height: 1rem;
-    }
-    .res4phn p{
-        margin-right: 20px;
-    }
-    .res4phn button{
-        margin-bottom: 10px;
-        margin-left: 15px;
-    }
-}
-
-@media screen and (max-width: 768px){
-    .speedbtns{
-        display: flex;
-        flex-direction: column;
-        line-height: 1rem;
-        justify-content: space-evenly;
-    }
+  .res4phn button {
+    margin-bottom: 10px;
+    margin-left: 15px;
+  }
 }

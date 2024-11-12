@@ -1,37 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Snake-Game</title>
-    <link rel="stylesheet" href="style.css"> 
-</head>
-    <div class="bg">
-        <div id="scorebox">Score: 0</div>
-        <div id="highscorebox">High Score: 0</div>
-        <div id="board">
-        </div>
-        <div class="speedbtns">
-            <p id="Difficulty">Difficulty : Easy</p>
-            <div class="res4phn">
-                <p id="showspeed">Speed : 5</p>
-                <button id="uparrow"><span>+</span></button>
-                <button id="Dnarrow"><span>--</span></button>
-            </div>
-        </div>
-        <div id="OnScreenButtons">
-            <button id="b1">&uarr;</button>
-            <div>
-                <button id="b3">&larr;</button>
-                <button id="b4">&rarr;</button>
-            </div>
-            <button id="b2">&darr;</button>
-        </div>
+    <link rel="stylesheet" href="style.css" />
+    <script src="joy.js"></script>
+  </head>
+  <body>
+    <div id="score-container">
+      <div id="scorebox">Score: 0</div>
+      <div id="highscorebox">High Score: 0</div>
     </div>
-    <script src="script.js"></script>
-    <!-- <script src="JS updates.js"></script> -->
 
-<body>
-</body>
+    <div class="bg">
+      <!-- Speed buttons div should not affect the other elements -->
+      <div class="speedbtns">
+        <p id="Difficulty">Difficulty : Easy</p>
+        <div class="res4phn">
+          <p id="showspeed">Speed : 5</p>
+          <div>
+            <button id="uparrow"><span>+</span></button>
+            <button id="Dnarrow"><span>--</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board should remain unaffected by speedbtns -->
+      <div id="board"></div>
+
+      <!-- Joystick -->
+      <div id="joyDiv" style="width: 200px; height: 200px; margin-bottom: 20px"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
 </html>
