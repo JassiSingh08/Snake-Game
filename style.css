@@ -16,7 +16,7 @@ body {
 }
 
 .bg {
-  background: url("./Images/bg.jpg");
+  background: url("./images/bg.jpg");
   background-size: cover;
   min-height: 100vh;
   display: flex;
