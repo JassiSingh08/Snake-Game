@@ -163,7 +163,6 @@ const options = {
 const manager = nipplejs.create(options);
 
 manager.on("move", (evt, data) => {
-    inputDir = { x: 0, y: -1 }
     switch (data.direction.angle) {
         case "up":
             inputDir.x = 0;
