@@ -68,33 +68,6 @@ body {
   border-radius: 8px;
 }
 
-.speedbtns {
-  display: none;
-  position: absolute;
-  left: 10%;
-  gap: 15px;
-}
-
-.speedbtns p {
-  margin: 15px 0;
-  font-size: 26px;
-  font-weight: bold;
-}
-
-#uparrow,
-#Dnarrow {
-  width: 50px;
-  padding: 0 10px 5px;
-  border-radius: 10px;
-  border: 0;
-}
-
-#uparrow span,
-#Dnarrow span {
-  font-size: 23px;
-  font-weight: bolder;
-}
-
 #joystick {
   display: none;
   width: 200px;
@@ -117,21 +90,6 @@ body {
     align-items: flex-start;
     height: 4em;
     padding: 0.1em 1em;
-  }
-
-  .res4phn {
-    display: flex;
-    justify-content: center;
-    line-height: 1rem;
-  }
-
-  .res4phn p {
-    margin-right: 20px;
-  }
-
-  .res4phn button {
-    margin-bottom: 10px;
-    margin-left: 15px;
   }
 
   #joystick {

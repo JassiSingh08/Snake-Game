@@ -17,6 +17,7 @@ let food = {
 var hiscoreval = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
+    musicSound.play();
     sendMessageToWebView({ type: "DOM_READY" });
 });
 
@@ -27,9 +28,15 @@ let left = document.getElementById('b3');
 let right = document.getElementById('b4');
 let touch = document.getElementById('OnScreenButtons')
 
+const modal = document.getElementById('myModal');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const GameOverText = document.getElementById('GameOverText');
+let animationID
+
+
 // Game Functions
 function main(ctime) {
-    window.requestAnimationFrame(main)
+    animationID = window.requestAnimationFrame(main)
     console.time(ctime)
     if ((ctime - lastPaintTime) / 1000 < 1 / speed) {
         return;
@@ -40,21 +47,18 @@ function main(ctime) {
 
 function gameEngine() {
     if (isCollide(snakeArr)) {
-        // musicSound.pause();
-        // gameOverSound.play();
-        // window.location.reload();
-        inputDir = { x: 0, y: 0 };
-        alert("Game Over. Your Score is " + score + ". Press any key to play again!");
-        snakeArr = [{ x: 13, y: 15 }];
-        musicSound.play();
-        dispspeed.innerHTML = "Speed : " + speed;
-        score = 0;
-        scorebox.innerHTML = "Score: " + score;
-        sendMessageToWebView({ type: "GAME_OVER" });
+        cancelAnimationFrame(animationID)
+        animationID = null;
+        gameOverSound.play();
+        GameOverText.innerText = `Your Score is ${score}. Press close to play again!`
+        modal.style.display = 'flex';
+        musicSound.pause();
+        setTimeout(gameOverSound.pause(), 3000);
     }
 
     if (snakeArr[0].y === food.y && snakeArr[0].x === food.x) {
         foodSound.play();
+        navigator.vibrate(200)
         score += 1;
         if (score > hiscoreval) {
             hiscoreval = score;
@@ -107,7 +111,6 @@ function gameEngine() {
 
 // MAIN LOGIC
 
-musicSound.play();
 let hiscore = localStorage.getItem("hiscore");
 if (hiscore === null) {
     localStorage.setItem("hiscore", JSON.stringify(hiscoreval))
@@ -117,7 +120,7 @@ else {
     highscorebox.innerHTML = "High Score: " + hiscore;
 }
 
-window.requestAnimationFrame(main);
+animationID = window.requestAnimationFrame(main);
 window.addEventListener('keydown', e => {
     inputDir = { x: 0, y: -1 } // Start the game
     moveSound.play();
@@ -163,6 +166,7 @@ const options = {
 const manager = nipplejs.create(options);
 
 manager.on("move", (evt, data) => {
+    moveSound.play();
     switch (data.direction.angle) {
         case "up":
             inputDir.x = 0;
@@ -187,4 +191,23 @@ manager.on("move", (evt, data) => {
 
 manager.on("end", () => {
     console.log("Stop");
+});
+
+// Close modal when the close button is clicked
+closeModalBtn.addEventListener('click', () => {
+    animationID = window.requestAnimationFrame(main)
+    inputDir = { x: 0, y: 0 };
+    snakeArr = [{ x: 13, y: 15 }];
+    musicSound.play();
+    score = 0;
+    scorebox.innerHTML = "Score: " + score;
+    sendMessageToWebView({ type: "GAME_OVER" });
+    modal.style.display = 'none';
+});
+
+// Close modal when clicking outside the modal content
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
 });

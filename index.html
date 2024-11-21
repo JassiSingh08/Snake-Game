@@ -10,7 +10,8 @@
     <title>Snake-Game</title>
     <script src="https://cdn.jsdelivr.net/npm/nipplejs@0.9.0/dist/nipplejs.min.js"></script>
     <link rel="stylesheet" href="style.css" />
-    <script src="joy.js"></script>
+    <link rel="stylesheet" href="modalStyle.css" />
+    <script src="helpers.js"></script>
   </head>
   <body>
     <div id="score-container">
@@ -23,7 +24,15 @@
       <div id="joystick"></div>
     </div>
 
+    <!-- Modal Structure -->
+    <div class="modal" id="myModal">
+      <div class="modal-content">
+        <h3 id="GameOverHeading">Game Over!</h3>
+        <p id="GameOverText"></p>
+        <button class="close-btn" id="closeModalBtn">Again!</button>
+      </div>
+    </div>
+
     <script src="script.js"></script>
-    <script src="helpers.js"></script>
   </body>
 </html>

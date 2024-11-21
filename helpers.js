@@ -1,4 +1,5 @@
 function sendMessageToWebView(message) {
+    console.log(JSON.stringify(message))
     if (window.ReactNativeWebView) {
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
     }
