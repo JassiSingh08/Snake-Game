@@ -10,14 +10,15 @@ let lastPaintTime = 0;
 let snakeArr = [
     { x: 13, y: 15 }
 ]
-let food = { x: 6, y: 7 };
+let food = {
+    x: 6, y: 7,
+    // emoji: ['🍎', '🍌', '🍇', '🍒', '🍉'][Math.floor(Math.random() * 5)]
+};
 var hiscoreval = 0;
 
-//variables for speed buttons
-var upArr = document.getElementById('uparrow');
-var downArr = document.getElementById('Dnarrow');
-var dispspeed = document.getElementById('showspeed');
-var level = document.getElementById('Difficulty');
+document.addEventListener('DOMContentLoaded', function () {
+    sendMessageToWebView({ type: "DOM_READY" });
+});
 
 //variables for onscreen buttons
 let up = document.getElementById('b1');
@@ -28,37 +29,20 @@ let touch = document.getElementById('OnScreenButtons')
 
 // Game Functions
 function main(ctime) {
-    window.requestAnimationFrame(main)              //first parameter current time 
+    window.requestAnimationFrame(main)
     console.time(ctime)
-    if ((ctime - lastPaintTime) / 1000 < 1 / speed)    // last paint time when was the screen last full rendered
-    {
+    if ((ctime - lastPaintTime) / 1000 < 1 / speed) {
         return;
     }
     lastPaintTime = ctime;
     gameEngine();
 }
 
-function isCollide(snake) {
-    // if you bump into yourself
-    for (let i = 1; i < snakeArr.length; i++) {
-        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-            return true;
-        }
-    }
-
-    // if you bump into the wall
-    if (snake[0].x >= 18 || snake[0].x <= 0 || snake[0].y >= 18 || snake[0].y <= 0) {
-        return true;
-    }
-
-}
-
 function gameEngine() {
-    // updating the snake array & food 
-
     if (isCollide(snakeArr)) {
-        musicSound.pause();
-        gameOverSound.play();
+        // musicSound.pause();
+        // gameOverSound.play();
+        // window.location.reload();
         inputDir = { x: 0, y: 0 };
         alert("Game Over. Your Score is " + score + ". Press any key to play again!");
         snakeArr = [{ x: 13, y: 15 }];
@@ -66,11 +50,8 @@ function gameEngine() {
         dispspeed.innerHTML = "Speed : " + speed;
         score = 0;
         scorebox.innerHTML = "Score: " + score;
-        // speed = 5 ;                                       //Everytime game over Users would not want to adjust difficulty back to at they lost 
-        // level.innerHTML = "Difficulty : Easy"            // it will go back to normal if window reloads 
+        sendMessageToWebView({ type: "GAME_OVER" });
     }
-
-    // if food is eaten increment the score and regenerate the food 
 
     if (snakeArr[0].y === food.y && snakeArr[0].x === food.x) {
         foodSound.play();
@@ -80,14 +61,19 @@ function gameEngine() {
             localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
             highscorebox.innerHTML = "High Score: " + hiscoreval;
         }
+        if (score % 20 === 0 && speed < 40) {
+            speed += 4;
+        }
         scorebox.innerHTML = "Score: " + score;
         snakeArr.unshift({ x: snakeArr[0].x + inputDir.x, y: snakeArr[0].y + inputDir.y })
         let a = 2;
         let b = 16;
-        food = { x: Math.round(a + (b - a) * Math.random()), y: Math.round(a + (b - a) * Math.random()) }   // to generate random location of the food 
+        food = {
+            x: Math.round(a + (b - a) * Math.random()),
+            y: Math.round(a + (b - a) * Math.random()),
+            // emoji: ['🍎', '🍌', '🍇', '🍒', '🍉'][Math.floor(Math.random() * 5)]
+        };
     }
-
-    // Moving the snake 
 
     for (let i = snakeArr.length - 2; i >= 0; i--) {
         snakeArr[i + 1] = { ...snakeArr[i] };
@@ -96,72 +82,34 @@ function gameEngine() {
     snakeArr[0].x += inputDir.x;
     snakeArr[0].y += inputDir.y;
 
-    // display the snake and food
-
-    // display the snake 
-
     board.innerHTML = "";
     snakeArr.forEach((e, index) => {
         snakeElement = document.createElement('div');
-        snakeElement.style.gridRowStart = e.y;  // to place snake in the y row
-        snakeElement.style.gridColumnStart = e.x;  // to place snake in the x column
+        snakeElement.style.gridRowStart = e.y;
+        snakeElement.style.gridColumnStart = e.x;
 
         if (index === 0) {
-            snakeElement.classList.add('head');  // if index is zero then add head to the body
+            snakeElement.classList.add('head');
         }
         else {
             snakeElement.classList.add('snake');
         }
         board.appendChild(snakeElement);
     });
-    // display the food
-    foodElement = document.createElement('div');
-    foodElement.style.gridRowStart = food.y;  // to place food in the y row
-    foodElement.style.gridColumnStart = food.x;  // to place food in the x column
+    // Display the food
+    const foodElement = document.createElement('div');
+    foodElement.style.gridRowStart = food.y;
+    foodElement.style.gridColumnStart = food.x;
     foodElement.classList.add('food')
+    // foodElement.textContent = food.emoji;
     board.appendChild(foodElement);
-
-
 }
-
-// Difficulty/  let the user update it USING ONSCREEN BUTTONS
-
-upArr.addEventListener("click", () => {
-    speed += 5;
-    dispspeed.innerHTML = "Speed : " + speed;
-    if (speed > 14)                                  // Added difficulty Indicator for the user 
-    {
-        level.innerHTML = "Difficulty : Medium";
-    }
-    if (speed > 29) {
-        level.innerHTML = "Difficulty : Hard";
-        console.log("speed")
-    }
-
-    // console.log("new speed " +speed);
-})
-
-downArr.addEventListener("click", () => {
-    speed -= 5;
-    if (speed < 1) {
-        alert("Speed Can Not Be Negative!");
-        speed = 5
-    }
-    dispspeed.innerHTML = "Speed : " + speed;
-
-    // console.log("new speed " +speed);
-})
-
-
-
-
 
 // MAIN LOGIC
 
 musicSound.play();
 let hiscore = localStorage.getItem("hiscore");
 if (hiscore === null) {
-
     localStorage.setItem("hiscore", JSON.stringify(hiscoreval))
 }
 else {
@@ -202,43 +150,42 @@ window.addEventListener('keydown', e => {
     }
 
 });
-// N, NE, E, SE, S, SW, W, NW and C
-var Joy1 = new JoyStick("joyDiv", {}, function (stickData) {
-    const direction = stickData.cardinalDirection;
-    console.log(direction);
 
-    // Only handle primary directions, ignore diagonal ones
-    switch (direction) {
-        case "N":
-        case "NE":
-            console.log("ArrowUp");
+const options = {
+    zone: document.getElementById("joystick"),
+    mode: "static",
+    position: { left: "50%", top: "50%" },
+    color: "#008000",
+    restJoystick: true,
+    size: 150
+};
+
+const manager = nipplejs.create(options);
+
+manager.on("move", (evt, data) => {
+    inputDir = { x: 0, y: -1 }
+    switch (data.direction.angle) {
+        case "up":
             inputDir.x = 0;
             inputDir.y = -1;
             break;
-
-        case "S":
-        case "SW":
-            console.log("ArrowDown");
+        case "down":
             inputDir.x = 0;
             inputDir.y = 1;
             break;
-
-        case "W":
-        case "NW":
-            console.log("ArrowLeft");
+        case "left":
             inputDir.x = -1;
             inputDir.y = 0;
             break;
-
-
-        case "E":
-        case "SE":
-            console.log("ArrowRight");
+        case "right":
             inputDir.x = 1;
             inputDir.y = 0;
             break;
-
         default:
             break;
     }
+});
+
+manager.on("end", () => {
+    console.log("Stop");
 });

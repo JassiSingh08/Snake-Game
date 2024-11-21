@@ -3,37 +3,27 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
     <title>Snake-Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/nipplejs@0.9.0/dist/nipplejs.min.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="joy.js"></script>
   </head>
   <body>
     <div id="score-container">
-      <div id="scorebox">Score: 0</div>
       <div id="highscorebox">High Score: 0</div>
+      <div id="scorebox">Score: 0</div>
     </div>
 
     <div class="bg">
-      <!-- Speed buttons div should not affect the other elements -->
-      <div class="speedbtns">
-        <p id="Difficulty">Difficulty : Easy</p>
-        <div class="res4phn">
-          <p id="showspeed">Speed : 5</p>
-          <div>
-            <button id="uparrow"><span>+</span></button>
-            <button id="Dnarrow"><span>--</span></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Board should remain unaffected by speedbtns -->
       <div id="board"></div>
-
-      <!-- Joystick -->
-      <div id="joyDiv" style="width: 200px; height: 200px; margin-bottom: 20px"></div>
+      <div id="joystick"></div>
     </div>
 
     <script src="script.js"></script>
+    <script src="helpers.js"></script>
   </body>
 </html>
