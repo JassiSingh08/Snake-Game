@@ -39,35 +39,6 @@ body {
   font-size: 1em;
 }
 
-#board {
-  background: linear-gradient(rgb(170, 236, 170), rgb(236, 236, 167));
-  width: 84vmin;
-  height: 92vmin;
-  border: 2px solid black;
-  display: grid;
-  grid-template-columns: repeat(20, 1fr);
-  grid-template-rows: repeat(20, 1fr);
-}
-
-.head {
-  background: linear-gradient(red, yellow);
-  border: 2px solid purple;
-  transform: scale(1.02);
-  border-radius: 9px;
-}
-
-.snake {
-  background-color: purple;
-  border: 0.25vmin solid white;
-  border-radius: 12px;
-}
-
-.food {
-  background: linear-gradient(rgb(199, 102, 102), purple);
-  border: 0.25vmin solid black;
-  border-radius: 8px;
-}
-
 #joystick {
   display: none;
   width: 200px;
@@ -79,6 +50,10 @@ body {
 
 /* Responsive Styles */
 @media screen and (max-width: 900px) {
+  #gameCanvas {
+    width: 90%;
+  }
+
   .bg {
     justify-content: space-evenly;
   }
@@ -97,7 +72,7 @@ body {
     width: 200px;
     height: 200px;
     position: relative;
-    margin: 20px auto 40px auto;
+    margin: 40px auto;
     border-radius: 50%;
   }
 }

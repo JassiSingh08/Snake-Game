@@ -6,7 +6,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  /* background-color: rgba(0, 0, 0, 0.05); */
   justify-content: center;
   align-items: center;
 }
@@ -14,7 +14,7 @@
 /* Modal content */
 .modal-content {
   background-color: white;
-  padding: 20px;
+  padding: 20px 10px;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 80%;
@@ -46,4 +46,61 @@
 
 .close-btn:hover {
   background-color: darkred;
+}
+
+/* Volume Toggle */
+
+/*  */
+.container {
+  --color: #000;
+  --size: 25px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  font-size: var(--size);
+  user-select: none;
+  fill: var(--color);
+}
+
+.container .mute {
+  position: absolute;
+  animation: keyframes-fill 0.5s;
+}
+
+.container .voice {
+  position: absolute;
+  display: none;
+  animation: keyframes-fill 0.5s;
+}
+
+/* ------ On check event ------ */
+.container input:checked ~ .mute {
+  display: none;
+}
+
+.container input:checked ~ .voice {
+  display: block;
+}
+
+/* ------ Hide the default checkbox ------ */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* ------ Animation ------ */
+@keyframes keyframes-fill {
+  0% {
+    transform: rotate(0deg) scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    transform: rotate(-10deg) scale(1.2);
+  }
 }

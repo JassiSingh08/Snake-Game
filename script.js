@@ -1,213 +1,273 @@
-// Game Constants & Variables
-let inputDir = { x: 0, y: 0 };
-const foodSound = new Audio('/music/food.mp3');
-const gameOverSound = new Audio('/music/gameover.mp3');
-const moveSound = new Audio('/music/move.mp3');
-const musicSound = new Audio('/music/music.mp3');
-let speed = 10;
-let score = 0;
-let lastPaintTime = 0;
-let snakeArr = [
-    { x: 13, y: 15 }
-]
-let food = {
-    x: 6, y: 7,
-    // emoji: ['🍎', '🍌', '🍇', '🍒', '🍉'][Math.floor(Math.random() * 5)]
-};
-var hiscoreval = 0;
 
+// Load images
+const snakeHeadImg = new Image();
+const foodSprite = new Image();
+const snakeBodyImg = new Image();
+const gameOverSnakeHead = new Image();
+snakeHeadImg.src = "./assets/sprites/snake_green_head_64.png";
+foodSprite.src = "./assets/sprites/apple_red_64.png";
+snakeBodyImg.src = "./assets/sprites/snake_green_blob_64.png";
+gameOverSnakeHead.src = "./assets/sprites/snake_green_xx.png";
+
+//Load Audio
+const GamePlayAudio = new Audio("./music/gameplay.mp3");
+const GameOverAudio = new Audio("./music/gameover.mp3");
+const GameOverAudio2 = new Audio("./music/error.mp3");
+const foodEatenAudio = new Audio("./music/food.mp3");
+//point.mp3 will be used for Bonus Food
+
+// Global flags and variables
+let highScore = 0;
+let animationID;
+let gameStarted = false;
+let gamePaused = false;
+
+const highscorebox = document.getElementById('highscorebox');
+
+//Modal Variables
+const modal = document.getElementById('myModal');
+const ModalHeading = document.getElementById('GameOverHeading');
+const GameOverText = document.getElementById('GameOverText');
+const CloseModalBtn = document.getElementById('CloseModalBtn');
+
+//Audio UI variables
+const muteDiv = document.querySelector('.mute');
+const voiceDiv = document.querySelector('.voice');
+const muteAudioCheckbox = document.getElementById('muteAudioCheckbox');
+
+//Event Listeners
 document.addEventListener('DOMContentLoaded', function () {
-    musicSound.play();
+    //Load Audio Setting
+    const isAudioMuted = localStorage.getItem("isAudioMuted") === "true";
+    toggleAudioState(isAudioMuted);
+    if (!isAudioMuted) muteAudioCheckbox.checked = true
+
+    // Load Highscore if any
+    let highScore = localStorage.getItem("highScore") ?? 0;
+    highscorebox.innerHTML = "High Score: " + highScore;
+
+    //Show Start Modal
+    Modal(
+        "Start Game",
+        `Press Play to start the game!`,
+        "Play",
+        "flex",
+        () => {
+            modal.style.display = "none";
+        }
+    );
+
+    //Send Event to Native
     sendMessageToWebView({ type: "DOM_READY" });
 });
 
-//variables for onscreen buttons
-let up = document.getElementById('b1');
-let down = document.getElementById('b2');
-let left = document.getElementById('b3');
-let right = document.getElementById('b4');
-let touch = document.getElementById('OnScreenButtons')
+muteAudioCheckbox.addEventListener('change', function () {
+    localStorage.setItem("isAudioMuted", !this.checked)
+    toggleAudioState(!this.checked);
+});
 
-const modal = document.getElementById('myModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const GameOverText = document.getElementById('GameOverText');
-let animationID
+document.addEventListener("message", handleNativeEvent)
 
+// Canvas Setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+let canvasWidth = 600;
+let canvasHeight = 600;
+canvas.width = canvasWidth;
+canvas.height = canvasHeight;
+let snakePositions = new Set();
+
+const boxSize = 20;
+let speed = 10;
+let direction = { x: 1, y: 0 };
+let snake = [{ x: 200, y: 200 }];
+let food = generateFoodPosition(snake);
+let score = 0;
+
+function resizeCanvas() {
+    if (window.innerWidth <= 900) {
+        const heightRatio = 1.5;
+        canvas.height = canvas.width * heightRatio;
+    } else {
+        // For desktop
+        canvasWidth = 600;
+        canvasHeight = 600;
+    }
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// Game Loop
+let lastRenderTime = 0;
+function gameLoop(currentTime) {
+    if (!gameStarted) return;
+    animationID = window.requestAnimationFrame(gameLoop);
+    const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
+    if (secondsSinceLastRender < 1 / speed) return;
+
+    lastRenderTime = currentTime;
+
+    update();
+    draw();
+}
+
+function pauseGame() {
+    if (gamePaused) return;
+    cancelAnimationFrame(animationID);
+    gamePaused = true;
+    gameStarted = false;
+    Modal(
+        "Game Paused!",
+        "",
+        "Resume",
+        "flex",
+        () => {
+            resumeGame();
+        }
+    );
+}
+
+function resumeGame() {
+    if (!gamePaused) return;
+    modal.style.display = "none";
+    gamePaused = false;
+    gameStarted = true;
+
+    animationID = window.requestAnimationFrame(gameLoop);
+    sendMessageToWebView({ type: "IS_PLAYING" });
+}
+
+function updateSnakePositions() {
+    snakePositions.clear();
+    snake.forEach(segment => {
+        snakePositions.add(`${segment.x},${segment.y}`);
+    });
+}
 
 // Game Functions
-function main(ctime) {
-    animationID = window.requestAnimationFrame(main)
-    console.time(ctime)
-    if ((ctime - lastPaintTime) / 1000 < 1 / speed) {
+function update() {
+    const newHead = {
+        x: snake[0].x + direction.x * boxSize,
+        y: snake[0].y + direction.y * boxSize,
+    };
+    //Warp through WALLS
+    // const newHead = {
+    //     x: (snake[0].x + direction.x * boxSize + canvas.width) % canvas.width,
+    //     y: (snake[0].y + direction.y * boxSize + canvas.height) % canvas.height,
+    // };
+
+    // Check for collisions
+    if (checkCollision(newHead, snakePositions)) {
+        snakeHeadImg.src = gameOverSnakeHead.src;
+        GameOverAudio2.play();
+        cancelAnimationFrame(animationID);
+        sendMessageToWebView({ type: "GAME_OVER" });
+        Modal(
+            "Game Over!",
+            `Your Score is ${score}. Press close to play again!`,
+            "Again!",
+            "flex",
+            () => { }
+        );
+        resetGame();
         return;
     }
-    lastPaintTime = ctime;
-    gameEngine();
-}
 
-function gameEngine() {
-    if (isCollide(snakeArr)) {
-        cancelAnimationFrame(animationID)
-        animationID = null;
-        gameOverSound.play();
-        GameOverText.innerText = `Your Score is ${score}. Press close to play again!`
-        modal.style.display = 'flex';
-        musicSound.pause();
-        setTimeout(gameOverSound.pause(), 3000);
-    }
+    snake.unshift(newHead);
 
-    if (snakeArr[0].y === food.y && snakeArr[0].x === food.x) {
-        foodSound.play();
-        navigator.vibrate(200)
+    // Check if food is eaten
+    if (newHead.x === food.x && newHead.y === food.y) {
+        foodEatenAudio.play();
+        navigator.vibrate(150);
         score += 1;
-        if (score > hiscoreval) {
-            hiscoreval = score;
-            localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
-            highscorebox.innerHTML = "High Score: " + hiscoreval;
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem("highScore", JSON.stringify(highScore));
+            highscorebox.innerHTML = "High Score: " + highScore;
         }
-        if (score % 20 === 0 && speed < 40) {
-            speed += 4;
+        if (score % 15 === 0 && speed < 40) {
+            speed += 5;
         }
         scorebox.innerHTML = "Score: " + score;
-        snakeArr.unshift({ x: snakeArr[0].x + inputDir.x, y: snakeArr[0].y + inputDir.y })
-        let a = 2;
-        let b = 16;
-        food = {
-            x: Math.round(a + (b - a) * Math.random()),
-            y: Math.round(a + (b - a) * Math.random()),
-            // emoji: ['🍎', '🍌', '🍇', '🍒', '🍉'][Math.floor(Math.random() * 5)]
-        };
+        food = generateFoodPosition(snake);
+    } else {
+        snake.pop();
     }
+    updateSnakePositions();
+}
 
-    for (let i = snakeArr.length - 2; i >= 0; i--) {
-        snakeArr[i + 1] = { ...snakeArr[i] };
-    }
+function draw() {
+    const gradient = ctx.createLinearGradient(0, 0, canvasWidth, canvasHeight);
+    gradient.addColorStop(0, "rgb(170, 236, 170)");
+    gradient.addColorStop(1, "rgb(236, 236, 167)");
 
-    snakeArr[0].x += inputDir.x;
-    snakeArr[0].y += inputDir.y;
+    // Fill the canvas with the gradient
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    board.innerHTML = "";
-    snakeArr.forEach((e, index) => {
-        snakeElement = document.createElement('div');
-        snakeElement.style.gridRowStart = e.y;
-        snakeElement.style.gridColumnStart = e.x;
-
+    // Draw the snake
+    snake.forEach((segment, index) => {
         if (index === 0) {
-            snakeElement.classList.add('head');
+            ctx.drawImage(snakeHeadImg, segment.x, segment.y, boxSize, boxSize);
+        } else {
+            ctx.drawImage(snakeBodyImg, segment.x, segment.y, boxSize, boxSize);
         }
-        else {
-            snakeElement.classList.add('snake');
-        }
-        board.appendChild(snakeElement);
     });
-    // Display the food
-    const foodElement = document.createElement('div');
-    foodElement.style.gridRowStart = food.y;
-    foodElement.style.gridColumnStart = food.x;
-    foodElement.classList.add('food')
-    // foodElement.textContent = food.emoji;
-    board.appendChild(foodElement);
+
+    // Draw the food
+    ctx.drawImage(foodSprite, food.x, food.y, boxSize, boxSize);
 }
 
-// MAIN LOGIC
+function startGame() {
+    if (gameStarted) return;
 
-let hiscore = localStorage.getItem("hiscore");
-if (hiscore === null) {
-    localStorage.setItem("hiscore", JSON.stringify(hiscoreval))
-}
-else {
-    hiscoreval = JSON.parse(hiscore);
-    highscorebox.innerHTML = "High Score: " + hiscore;
-}
-
-animationID = window.requestAnimationFrame(main);
-window.addEventListener('keydown', e => {
-    inputDir = { x: 0, y: -1 } // Start the game
-    moveSound.play();
-    switch (e.key) {
-        case "ArrowUp":
-            console.log("ArrowUp");
-            inputDir.x = 0;
-            inputDir.y = -1;
-            break;
-
-        case "ArrowDown":
-            console.log("ArrowDown");
-            inputDir.x = 0;
-            inputDir.y = 1;
-            break;
-
-        case "ArrowLeft":
-            console.log("ArrowLeft");
-            inputDir.x = -1;
-            inputDir.y = 0;
-            break;
-
-        case "ArrowRight":
-            console.log("ArrowRight");
-            inputDir.x = 1;
-            inputDir.y = 0;
-            break;
-        default:
-            break;
-    }
-
-});
-
-const options = {
-    zone: document.getElementById("joystick"),
-    mode: "static",
-    position: { left: "50%", top: "50%" },
-    color: "#008000",
-    restJoystick: true,
-    size: 150
-};
-
-const manager = nipplejs.create(options);
-
-manager.on("move", (evt, data) => {
-    moveSound.play();
-    switch (data.direction.angle) {
-        case "up":
-            inputDir.x = 0;
-            inputDir.y = -1;
-            break;
-        case "down":
-            inputDir.x = 0;
-            inputDir.y = 1;
-            break;
-        case "left":
-            inputDir.x = -1;
-            inputDir.y = 0;
-            break;
-        case "right":
-            inputDir.x = 1;
-            inputDir.y = 0;
-            break;
-        default:
-            break;
-    }
-});
-
-manager.on("end", () => {
-    console.log("Stop");
-});
-
-// Close modal when the close button is clicked
-closeModalBtn.addEventListener('click', () => {
-    animationID = window.requestAnimationFrame(main)
-    inputDir = { x: 0, y: 0 };
-    snakeArr = [{ x: 13, y: 15 }];
-    musicSound.play();
+    // Initialize game state
+    snakeHeadImg.src = "./assets/sprites/snake_green_head_64.png";
+    snake = [{ x: 200, y: 200 }];
+    direction = { x: 1, y: 0 };
+    food = generateFoodPosition(snake);
     score = 0;
-    scorebox.innerHTML = "Score: " + score;
-    sendMessageToWebView({ type: "GAME_OVER" });
-    modal.style.display = 'none';
-});
+    snakePositions.clear();
 
-// Close modal when clicking outside the modal content
-window.addEventListener('click', (event) => {
-    if (event.target === modal) {
-        modal.style.display = 'none';
+    // Start game
+    gameStarted = true;
+    gamePaused = false;
+    modal.style.display = "none";
+
+    animationID = window.requestAnimationFrame(gameLoop);
+    sendMessageToWebView({ type: "IS_PLAYING" });
+}
+
+function resetGame() {
+    cancelAnimationFrame(animationID);
+    gameStarted = false;
+    gamePaused = false;
+    snakePositions.clear();
+    score = 0;
+    scorebox.innerHTML = "Score: " + 0;
+}
+
+// Modal Button Logic
+CloseModalBtn.addEventListener("click", () => {
+    navigator.vibrate(200);
+    if (!gameStarted && !gamePaused) {
+        startGame();
+    } else if (gamePaused) {
+        resumeGame();
+    } else {
+        resetGame();
     }
 });
+
+resizeCanvas();
+
+function handleNativeEvent(event) {
+    const message = event.data;
+    if (message.type === "PAUSE_GAME") {
+        pauseGame();
+    }
+}
