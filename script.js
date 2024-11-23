@@ -9,11 +9,20 @@ foodSprite.src = "./assets/sprites/apple_red_64.png";
 snakeBodyImg.src = "./assets/sprites/snake_green_blob_64.png";
 gameOverSnakeHead.src = "./assets/sprites/snake_green_xx.png";
 
+//Load Audio
+const GamePlayAudio = new Audio("./music/gameplay.mp3");
+const GameOverAudio = new Audio("./music/gameover.mp3");
+const GameOverAudio2 = new Audio("./music/error.mp3");
+const foodEatenAudio = new Audio("./music/food.mp3");
+//point.mp3 will be used for Bonus Food
+
 // Global flags and variables
-let hiscoreval = 0;
+let highScore = 0;
 let animationID;
 let gameStarted = false;
 let gamePaused = false;
+
+const highscorebox = document.getElementById('highscorebox');
 
 //Modal Variables
 const modal = document.getElementById('myModal');
@@ -21,8 +30,23 @@ const ModalHeading = document.getElementById('GameOverHeading');
 const GameOverText = document.getElementById('GameOverText');
 const CloseModalBtn = document.getElementById('CloseModalBtn');
 
+//Audio UI variables
+const muteDiv = document.querySelector('.mute');
+const voiceDiv = document.querySelector('.voice');
+const muteAudioCheckbox = document.getElementById('muteAudioCheckbox');
+
+//Event Listeners
 document.addEventListener('DOMContentLoaded', function () {
-    highscorebox.innerHTML = "High Score: " + localStorage.getItem("hiscore");
+    //Load Audio Setting
+    const isAudioMuted = localStorage.getItem("isAudioMuted") === "true";
+    toggleAudioState(isAudioMuted);
+    if (!isAudioMuted) muteAudioCheckbox.checked = true
+
+    // Load Highscore if any
+    let highScore = localStorage.getItem("highScore") ?? 0;
+    highscorebox.innerHTML = "High Score: " + highScore;
+
+    //Show Start Modal
     Modal(
         "Start Game",
         `Press Play to start the game!`,
@@ -32,9 +56,15 @@ document.addEventListener('DOMContentLoaded', function () {
             modal.style.display = "none";
         }
     );
+
+    //Send Event to Native
     sendMessageToWebView({ type: "DOM_READY" });
 });
 
+muteAudioCheckbox.addEventListener('change', function () {
+    localStorage.setItem("isAudioMuted", !this.checked)
+    toggleAudioState(!this.checked);
+});
 
 document.addEventListener("message", handleNativeEvent)
 
@@ -57,7 +87,7 @@ let score = 0;
 
 function resizeCanvas() {
     if (window.innerWidth <= 900) {
-        var heightRatio = 1.5;
+        const heightRatio = 1.5;
         canvas.height = canvas.width * heightRatio;
     } else {
         // For desktop
@@ -68,7 +98,6 @@ function resizeCanvas() {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
 }
-
 
 window.addEventListener('resize', resizeCanvas);
 
@@ -119,25 +148,6 @@ function updateSnakePositions() {
     });
 }
 
-function checkCollision(head) {
-    if (
-        head.x < 0 ||
-        head.x >= canvas.width ||
-        head.y < 0 ||
-        head.y >= canvas.height
-    ) {
-        navigator.vibrate(200);
-        return true;
-    }
-
-    if (snakePositions.has(`${head.x},${head.y}`)) {
-        navigator.vibrate(200);
-        return true;
-    }
-
-    return false;
-}
-
 // Game Functions
 function update() {
     const newHead = {
@@ -151,8 +161,9 @@ function update() {
     // };
 
     // Check for collisions
-    if (checkCollision(newHead)) {
+    if (checkCollision(newHead, snakePositions)) {
         snakeHeadImg.src = gameOverSnakeHead.src;
+        GameOverAudio2.play();
         cancelAnimationFrame(animationID);
         sendMessageToWebView({ type: "GAME_OVER" });
         Modal(
@@ -170,12 +181,13 @@ function update() {
 
     // Check if food is eaten
     if (newHead.x === food.x && newHead.y === food.y) {
+        foodEatenAudio.play();
         navigator.vibrate(150);
         score += 1;
-        if (score > hiscoreval) {
-            hiscoreval = score;
-            localStorage.setItem("hiscore", JSON.stringify(hiscoreval));
-            highscorebox.innerHTML = "High Score: " + hiscoreval;
+        if (score > highScore) {
+            highScore = score;
+            localStorage.setItem("highScore", JSON.stringify(highScore));
+            highscorebox.innerHTML = "High Score: " + highScore;
         }
         if (score % 15 === 0 && speed < 40) {
             speed += 5;

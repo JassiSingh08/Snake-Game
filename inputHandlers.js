@@ -1,3 +1,5 @@
+const SnakeMoveAudio = new Audio("./music/move.mp3");
+
 const options = {
     zone: document.getElementById("joystick"),
     mode: "static",
@@ -10,6 +12,7 @@ const options = {
 const manager = nipplejs.create(options);
 
 window.addEventListener("keydown", (e) => {
+    SnakeMoveAudio.play();
     switch (e.key) {
         case "ArrowUp":
             // if (direction.y === 0)
@@ -31,6 +34,7 @@ window.addEventListener("keydown", (e) => {
 });
 
 manager.on("move", (evt, data) => {
+    SnakeMoveAudio.play();
     if (data.direction)
         switch (data.direction.angle) {
             case "up":
@@ -55,5 +59,6 @@ manager.on("move", (evt, data) => {
 });
 
 manager.on("end", () => {
+    SnakeMoveAudio.pause();
     console.log("Stop");
 });
