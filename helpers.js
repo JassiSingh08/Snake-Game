@@ -1,3 +1,11 @@
+const Modal = (heading, subText, buttonText, display, onclick = () => { }) => {
+    ModalHeading.innerText = heading;
+    GameOverText.innerText = subText;
+    CloseModalBtn.innerText = buttonText;
+    modal.style.display = display;
+    CloseModalBtn.onclick = onclick;
+};
+
 function sendMessageToWebView(message) {
     console.log(JSON.stringify(message))
     if (window.ReactNativeWebView) {
@@ -5,17 +13,17 @@ function sendMessageToWebView(message) {
     }
 }
 
-function isCollide(snake) {
-    // if you bump into yourself
-    for (let i = 1; i < snakeArr.length; i++) {
-        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-            return true;
-        }
-    }
+function getRandomPosition(max, boxSize) {
+    return Math.floor(Math.random() * (max / boxSize)) * boxSize;
+}
 
-    // if you bump into the wall
-    if (snake[0].x >= 20 || snake[0].x <= 0 || snake[0].y >= 20 || snake[0].y <= 0) {
-        return true;
-    }
-
+function generateFoodPosition(snake) {
+    let position;
+    do {
+        position = {
+            x: getRandomPosition(canvas.width, boxSize),
+            y: getRandomPosition(canvas.height, boxSize),
+        };
+    } while (snake.some(segment => segment.x === position.x && segment.y === position.y));
+    return position;
 }
