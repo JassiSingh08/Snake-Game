@@ -60,18 +60,3 @@ function setItemLifespan(itemType, lifespan, warningCallback, removeCallback) {
         removeCallback();
     }, lifespan);
 }
-
-function toggleAudioState(isAudioMuted) {
-    if (isAudioMuted) {
-        muteDiv.style.display = 'block';
-        voiceDiv.style.display = 'none';
-        GamePlayAudio.pause();
-        GamePlayAudio.currentTime = 0;
-    }
-    else {
-        muteDiv.style.display = 'none';
-        voiceDiv.style.display = 'block';
-        GamePlayAudio.play();
-        GamePlayAudio.loop = true;
-    }
-}

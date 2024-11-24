@@ -58,7 +58,9 @@ document.addEventListener('DOMContentLoaded', function () {
     );
 
     //Send Event to Native
-    sendMessageToWebView({ type: "DOM_READY" });
+
+    sendMessageToWebView({ type: navigator.onLine ? "DOM_READY" : "DOM_NOT_READY" });
+
 });
 
 muteAudioCheckbox.addEventListener('change', function () {
@@ -271,3 +273,12 @@ function handleNativeEvent(event) {
         pauseGame();
     }
 }
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        pauseAllAudio();
+        pauseGame();
+    } else if (document.visibilityState === "visible") {
+        resumeAllAudio();
+    }
+});
