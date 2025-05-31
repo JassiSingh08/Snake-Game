@@ -277,7 +277,7 @@ function handleNativeEvent(event) {
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") {
         pauseAllAudio();
-        pauseGame();
+        if (gameStarted) pauseGame();
     } else if (document.visibilityState === "visible") {
         resumeAllAudio();
     }

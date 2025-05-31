@@ -11,24 +11,36 @@ const options = {
 };
 const manager = nipplejs.create(options);
 
+const isAudioMuted = localStorage.getItem("isAudioMuted") === "true";
+const playMoveSound = () => {
+    if (!isAudioMuted) SnakeMoveAudio.play();
+}
+
 window.addEventListener("keydown", (e) => {
-    SnakeMoveAudio.play();
     switch (e.key) {
         case "ArrowUp":
-            // if (direction.y === 0)
-            direction = { x: 0, y: -1 };
+            if (direction.y === 0) {
+                playMoveSound();
+                direction = { x: 0, y: -1 };
+            }
             break;
         case "ArrowDown":
-            // if (direction.y === 0)
-            direction = { x: 0, y: 1 };
+            if (direction.y === 0) {
+                playMoveSound();
+                direction = { x: 0, y: 1 };
+            }
             break;
         case "ArrowLeft":
-            // if (direction.x === 0)
-            direction = { x: -1, y: 0 };
+            if (direction.x === 0) {
+                playMoveSound();
+                direction = { x: -1, y: 0 };
+            }
             break;
         case "ArrowRight":
-            // if (direction.x === 0)
-            direction = { x: 1, y: 0 };
+            if (direction.x === 0) {
+                playMoveSound();
+                direction = { x: 1, y: 0 };
+            }
             break;
     }
 });
@@ -38,20 +50,20 @@ manager.on("move", (evt, data) => {
     if (data.direction)
         switch (data.direction.angle) {
             case "up":
-                // if (direction.y === 0) 
-                direction = { x: 0, y: -1 };
+                if (direction.y === 0)
+                    direction = { x: 0, y: -1 };
                 break;
             case "down":
-                // if (direction.y === 0) 
-                direction = { x: 0, y: 1 };
+                if (direction.y === 0)
+                    direction = { x: 0, y: 1 };
                 break;
             case "left":
-                // if (direction.x === 0) 
-                direction = { x: -1, y: 0 };
+                if (direction.x === 0)
+                    direction = { x: -1, y: 0 };
                 break;
             case "right":
-                // if (direction.x === 0) 
-                direction = { x: 1, y: 0 };
+                if (direction.x === 0)
+                    direction = { x: 1, y: 0 };
                 break;
             default:
                 break;

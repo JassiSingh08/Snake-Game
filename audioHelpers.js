@@ -1,9 +1,10 @@
+const allAudio = [GamePlayAudio, GameOverAudio, GameOverAudio2, foodEatenAudio, SnakeMoveAudio];
+
 function toggleAudioState(isAudioMuted) {
     if (isAudioMuted) {
         muteDiv.style.display = 'block';
         voiceDiv.style.display = 'none';
-        GamePlayAudio.pause();
-        GamePlayAudio.currentTime = 0;
+        pauseAllAudio();
     }
     else {
         muteDiv.style.display = 'none';
@@ -13,7 +14,6 @@ function toggleAudioState(isAudioMuted) {
     }
 }
 
-const allAudio = [GamePlayAudio, GameOverAudio, GameOverAudio2, foodEatenAudio];
 
 const pauseAllAudio = () => allAudio.forEach(audio => { audio.pause(); audio.currentTime = 0 });
 
